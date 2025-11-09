@@ -2,7 +2,6 @@ import css from "./ProfilePage.module.css";
 import Image from "next/image";
 import type { Metadata } from "next";
 
-// Метадані сторінки
 export const metadata: Metadata = {
   title: "Profile | NoteHub",
   description: "User profile page in NoteHub app",
@@ -19,10 +18,9 @@ export const metadata: Metadata = {
 };
 
 export default function Profile() {
-  // Тимчасові дані користувача
   const username = "your_username";
   const email = "your_email@example.com";
-  const avatarUrl = "https://ac.goit.global/fullstack/react/avatar.png"; // приклад
+  const avatarUrl = "https://ac.goit.global/fullstack/react/avatar.png";
 
   return (
     <main className={css.mainContent}>
