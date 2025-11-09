@@ -7,7 +7,8 @@ import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNotes, NormalizedNotesResponse } from "@/lib/api";
+import { fetchNotes } from "@/lib/api/clientApi";
+import type { Note } from "@/types/note";
 import styles from "../../NotesPage.module.css";
 
 interface NotesClientProps {
@@ -21,7 +22,8 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 500);
 
-  const { data, isLoading, isError } = useQuery<NormalizedNotesResponse>({
+  // Використовуємо Note[] замість NormalizedNotesResponse
+  const { data, isLoading, isError } = useQuery<Note[]>({
     queryKey: ["notes", initialTag, page, PER_PAGE, debouncedSearch],
     queryFn: () =>
       fetchNotes({
@@ -33,7 +35,8 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
     staleTime: 1000 * 60,
   });
 
-  const totalPages = data?.meta?.totalPages ?? 1;
+  // Для простоти пагінації можна обчислити totalPages локально, якщо потрібно
+  const totalPages = Math.ceil((data?.length ?? 0) / PER_PAGE) || 1;
 
   return (
     <div className={styles.app}>
@@ -53,7 +56,6 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
           />
         )}
 
-        {/* ✅ Тепер замість модалки — посилання */}
         <Link href="/notes/action/create" className={styles.button}>
           Create note +
         </Link>
@@ -62,7 +64,7 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
       <main>
         {isLoading && <p>Loading notes...</p>}
         {isError && <p>Error loading notes.</p>}
-        {data && <NoteList notes={data.data} />}
+        {data && <NoteList notes={data} />}
       </main>
     </div>
   );

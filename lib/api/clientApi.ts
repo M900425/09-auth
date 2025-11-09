@@ -2,12 +2,7 @@ import { api } from "./api";
 import type { Note } from "@/types/note";
 import type { User } from "@/types/user";
 
-export const fetchNotes = async (params?: {
-  search?: string;
-  page?: number;
-  perPage?: number;
-  tag?: string;
-}): Promise<Note[]> => {
+export const fetchNotes = async (params?: { search?: string; page?: number; perPage?: number; tag?: string }): Promise<Note[]> => {
   const { data } = await api.get<Note[]>("/notes", { params });
   return data;
 };
