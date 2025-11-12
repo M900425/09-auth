@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { register, login } from "@/lib/api/clientApi";
+import { register } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
 import css from "./SignUpPage.module.css";
 
@@ -19,9 +19,13 @@ export default function SignUpPage() {
     setError("");
 
     try {
-      await register({ email, password });
-      const user = await login({ email, password });
+      // Викликаємо лише register — він має повернути користувача
+      const user = await register({ email, password });
+
+      // Зберігаємо користувача у сторі
       setUser(user);
+
+      // Перенаправляємо на профіль
       router.push("/profile");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
