@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   const isPrivate = PRIVATE_PATHS.some((path) => url.pathname.startsWith(path));
 
   if (!accessToken && refreshToken) {
-    const session = await checkSession(refreshToken);
+    const session = await checkSession();
 
     if (!session) {
       url.pathname = "/sign-in";
