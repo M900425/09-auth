@@ -48,9 +48,9 @@ export default function EditProfilePage() {
       <div className={css.profileCard}>
         <h1 className={css.formTitle}>Edit Profile</h1>
 
-        {user?.avatarUrl && (
+        {user?.avatar && (
           <Image
-            src={user.avatarUrl}
+            src={user.avatar}
             alt="User Avatar"
             width={120}
             height={120}
