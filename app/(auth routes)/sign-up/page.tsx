@@ -19,13 +19,8 @@ export default function SignUpPage() {
     setError("");
 
     try {
-      // Викликаємо лише register — він має повернути користувача
       const user = await register({ email, password });
-
-      // Зберігаємо користувача у сторі
       setUser(user);
-
-      // Перенаправляємо на профіль
       router.push("/profile");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
