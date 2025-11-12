@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { login } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 import css from "./SignInPage.module.css";
 
 export default function SignInPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,7 +19,8 @@ export default function SignInPage() {
     setError("");
 
     try {
-      await login({ email, password });
+      const user = await login({ email, password });
+      setUser(user);
       router.push("/profile");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { checkSession } from "@/lib/api/clientApi";
+import { checkSession, getMe } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
 
 interface AuthProviderProps {
@@ -17,8 +17,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const verifySession = async () => {
       try {
-        const user = await checkSession();
-        if (user) {
+        const isSessionValid = await checkSession();
+        if (isSessionValid) {
+          const user = await getMe();
           setUser(user);
         } else {
           clearIsAuthenticated();

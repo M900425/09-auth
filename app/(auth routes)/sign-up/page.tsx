@@ -4,22 +4,24 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { register, login } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 import css from "./SignUpPage.module.css";
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Ось сюди вставляємо
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
     try {
       await register({ email, password });
-      await login({ email, password });
+      const user = await login({ email, password });
+      setUser(user);
       router.push("/profile");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -38,6 +40,7 @@ export default function SignUpPage() {
           <label htmlFor="email">Email</label>
           <input
             id="email"
+            name="email"
             type="email"
             className={css.input}
             value={email}
@@ -50,6 +53,7 @@ export default function SignUpPage() {
           <label htmlFor="password">Password</label>
           <input
             id="password"
+            name="password"
             type="password"
             className={css.input}
             value={password}

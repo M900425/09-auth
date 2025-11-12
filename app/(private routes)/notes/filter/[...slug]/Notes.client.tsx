@@ -15,15 +15,18 @@ interface NotesClientProps {
   initialTag: string;
 }
 
+interface NotesResponse {
+  notes: Note[];
+  totalCount: number;
+}
+
 const PER_PAGE = 12;
 
 export default function NotesClient({ initialTag }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 500);
-
-  // Використовуємо Note[] замість NormalizedNotesResponse
-  const { data, isLoading, isError } = useQuery<Note[]>({
+  const { data, isLoading, isError } = useQuery<NotesResponse>({
     queryKey: ["notes", initialTag, page, PER_PAGE, debouncedSearch],
     queryFn: () =>
       fetchNotes({
@@ -35,8 +38,7 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
     staleTime: 1000 * 60,
   });
 
-  // Для простоти пагінації можна обчислити totalPages локально, якщо потрібно
-  const totalPages = Math.ceil((data?.length ?? 0) / PER_PAGE) || 1;
+  const totalPages = Math.ceil((data?.totalCount ?? 0) / PER_PAGE) || 1;
 
   return (
     <div className={styles.app}>
@@ -64,7 +66,7 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
       <main>
         {isLoading && <p>Loading notes...</p>}
         {isError && <p>Error loading notes.</p>}
-        {data && <NoteList notes={data} />}
+        {data && <NoteList notes={data.notes} />}
       </main>
     </div>
   );
