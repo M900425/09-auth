@@ -3,6 +3,7 @@ import type { User } from "@/types/user";
 import type { Session } from "@/types/session";
 import { cookies } from "next/headers";
 import { api } from "./api";
+import type { AxiosResponse } from "axios";
 
 export const fetchNotes = async (params?: {
   search?: string;
@@ -43,17 +44,17 @@ export const getMe = async (): Promise<User> => {
   return data;
 };
 
-export const checkSession = async (): Promise<Session | null> => {
+export const checkSession = async (): Promise<AxiosResponse<Session> | null> => {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
 
-    const { data } = await api.get<Session>("/auth/session", {
+    const response = await api.get<Session>("/auth/session", {
       headers: {
         Cookie: cookieStore.toString(),
       },
     });
 
-    return data;
+    return response;
   } catch {
     return null;
   }

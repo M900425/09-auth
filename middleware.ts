@@ -14,12 +14,14 @@ export async function middleware(req: NextRequest) {
   const isPrivate = PRIVATE_PATHS.some((path) => url.pathname.startsWith(path));
 
   if (!accessToken && refreshToken) {
-    const session = await checkSession();
+    const sessionResponse = await checkSession();
 
-    if (!session) {
-      url.pathname = "/sign-in";
-      return NextResponse.redirect(url);
-    }
+if (!sessionResponse) {
+  url.pathname = "/sign-in";
+  return NextResponse.redirect(url);
+}
+
+const session = sessionResponse.data;
 
     const response = NextResponse.next();
 
